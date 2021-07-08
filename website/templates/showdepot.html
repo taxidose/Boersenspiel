@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Depot {{ depot.depot_name }}{% endblock %}
+
+{% block content %}
+<h3 align="center">Depotdetails {{ depot.depot_name }}</h3>
+
+<table class="table">
+    <thead>
+    <th scope="col">#</th>
+    <th scope="col">ISIN</th>
+    <th scope="col">Firma</th>
+    <th scope="col">aktueller Kurs</th>
+    <th scope="col">Kaufpreis</th>
+    <th scope="col">Kaufdatum</th>
+    </thead>
+    <tbody>
+    {% for share in shares %}
+    <tr>
+        <th scope="row">{{ loop.index }}</th>
+        <td>{{ share.isin }}</td>
+        <td>{{ share.company }}</td>
+        <td>tbd</td>
+        <td>{{ share.purchase_price }}</td>
+        <td>tbd</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<br>
+
+{% endblock %}

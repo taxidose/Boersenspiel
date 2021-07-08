@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="POST">
+    <h3 align="center">Neues Aktiendepot anlegen</h3>
+    <div class="form-group">
+        <label for="depotname">Depotname</label>
+        <input type="text" class="form-control" id="depotname" name="depotname" placeholder="Name des Aktiendepots"/>
+        <br>
+        <label for="description">Depotbeschreibung (optional)</label>
+        <input type="text" class="form-control" id="description" name="description" placeholder="Beschreibung (optional)"/>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Depot anlegen</button>
+    <a class="btn btn-secondary" href="/depots/">Abbrechen</a>
+</form>
+{% endblock %}

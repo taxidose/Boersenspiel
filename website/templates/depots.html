@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Depotüberblick{% endblock %}
+
+{% block content %}
+<h3 align="center">Depotüberblick {{ current_user.name }}</h3>
+
+<div class="list-group">
+    {% for depot in depots %}
+        <a href="/depots/{{ depot.id }}" class="list-group-item list-group-item-action">{{ depot.depot_name }}</a>
+    {% endfor %}
+</div>
+<br>
+<a class="btn btn-primary" href="/newdepot/" role="button">Neues Depot anlegen</a>
+{% endblock %}
