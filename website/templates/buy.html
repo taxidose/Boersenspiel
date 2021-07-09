@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Aktien kaufen{% endblock %}
+
+{% block content %}
+<h3 align="center">Aktien kaufen</h3>
+<form action="" method="POST">
+    <p>
+        {{ form.symbol.label }} &nbsp <a target="_blank" rel="noopener noreferrer" href="https://finance.yahoo.com/lookup/"><b>?</b></a>
+        <br>
+        {{ form.symbol(size=30) }}
+    </p>
+    <p>
+        {{ form.submit() }}
+    </p>
+    <br>
+    {% if share %}
+        <p>{{ share.ticker }}</p>
+        <p>{{ share.info.shortName }}</p>
+        <p>{{ share.info.currentPrice | replace(".", ",") }} €</p>
+        <br>
+        <p>
+            {{ form.amount.label }}
+            <br>
+            {{ form.amount(size=4) }}  {{ form.buybutton() }}
+        </p>
+    {% endif %}
+</form>
+
+{% endblock %}

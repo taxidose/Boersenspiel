@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_required, current_user
 from .models import Depot, Share
 from . import db
+from .forms import BuyShareForm
+import yfinance as yf
 
 views = Blueprint("views", __name__)
 
@@ -20,7 +22,7 @@ def depots():
     return render_template("depots.html", user=current_user, depots=depots)
 
 
-@views.route("/newdepot/",  methods=["GET", "POST"])
+@views.route("/newdepot/", methods=["GET", "POST"])
 @login_required
 def newdepot():
     if request.method == "POST":
@@ -37,6 +39,7 @@ def newdepot():
 
     return render_template("newdepot.html", user=current_user)
 
+
 @views.route("/depots/<depotid>/")
 @login_required
 def show_depo(depotid):
@@ -47,7 +50,38 @@ def show_depo(depotid):
         if depot.user_id == current_user.id:
             shares = Share.query.filter_by(depot_id=depotid).all()
 
-            return render_template("showdepot.html", depot=depot, shares=shares, user=current_user)
+            return render_template("showdepot.html", user=current_user, depot=depot, shares=shares)
 
     else:
         return "<h1>depot not found</h1>"
+
+
+@views.route("/buy/", methods=["GET", "POST"])
+@login_required
+def buy():
+    form = BuyShareForm()
+
+    if request.method == "POST":
+        symbol = form.symbol.data
+        share = yf.Ticker(symbol)
+
+        if form.amount.data:
+            for i in range(form.amount.data):
+                new_share = Share(isin=share.isin,
+                                  symbol=symbol,
+                                  company=share.info["shortName"],
+                                  purchase_price=share.info["currentPrice"],
+                                  depot_id=1,  # TODO: buy for different depots
+                                  owner_id=current_user.id
+                                  )
+                db.session.add(new_share)
+                db.session.commit()
+
+            flash(
+                f"""{form.amount.data} x {share.info["shortName"]} Aktien wurden für {(share.info["currentPrice"] * form.amount.data):.2f} € gekauft und dem Depot {new_share.depot_id} hinzugefügt.""")
+
+            return redirect(url_for("views.buy"))
+
+        return render_template("buy.html", user=current_user, form=form, share=share)
+
+    return render_template("buy.html", user=current_user, form=form)
