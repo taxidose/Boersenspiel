@@ -78,10 +78,12 @@ def buy():
                 db.session.add(new_share)
                 db.session.commit()
 
-            flash(
-                f"""{form.amount.data} x {share.info["shortName"]} Aktien wurden für {(share.info["currentPrice"] * form.amount.data):.2f} € gekauft und dem Depot {new_share.depot_id} hinzugefügt.""")
+            price_total = share.info["currentPrice"] * form.amount.data
 
-            setattr(current_user, "money", current_user.money - (share.info["currentPrice"] * form.amount.data))
+            flash(
+                f"""{form.amount.data} x {share.info["shortName"]} Aktien wurden für {price_total:.2f} € gekauft und dem Depot {new_share.depot_id} hinzugefügt.""")
+
+            setattr(current_user, "money", current_user.money - price_total)
             db.session.commit()
 
             return redirect(url_for("views.buy"))
