@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_required, current_user
-from .models import Depot, Share
+from .models import Depot, Share, User
 from . import db
 from .forms import BuyShareForm
 import yfinance as yf
+from sqlalchemy import update
 
 views = Blueprint("views", __name__)
 
@@ -79,6 +80,9 @@ def buy():
 
             flash(
                 f"""{form.amount.data} x {share.info["shortName"]} Aktien wurden für {(share.info["currentPrice"] * form.amount.data):.2f} € gekauft und dem Depot {new_share.depot_id} hinzugefügt.""")
+
+            setattr(current_user, "money", current_user.money - (share.info["currentPrice"] * form.amount.data))
+            db.session.commit()
 
             return redirect(url_for("views.buy"))
 
