@@ -4,7 +4,7 @@ from .models import Depot, Share, User
 from . import db
 from .forms import BuyShareForm
 import yfinance as yf
-from sqlalchemy import update
+
 
 views = Blueprint("views", __name__)
 
@@ -43,7 +43,7 @@ def newdepot():
 
 @views.route("/depots/<depotid>/")
 @login_required
-def show_depo(depotid):
+def show_depot(depotid):
     depot = Depot.query.filter_by(id=depotid).first()
 
     if depot:
@@ -91,3 +91,7 @@ def buy():
         return render_template("buy.html", user=current_user, form=form, share=share)
 
     return render_template("buy.html", user=current_user, form=form)
+
+
+def page_not_found(e):
+    return render_template('404.html', user=current_user), 404
